@@ -1,0 +1,48 @@
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body >
+        <ui:composition template="trPrincipal.xhtml">
+            <ui:define name="centro">
+                <h:form id="frm_calendario">
+                    <p:growl id="growl_calendario" life="2000" showDetail="true" />
+                    <h:panelGrid id="pg_schedule" style="margin-left: 20%; width: 60%; height: 80% !important">
+                        <p:schedule id="schedule" styleClass="font_padrao" timeZone="America/Sao_Paulo" value="#{mbCalendario.trEventModel}" draggable="false"  style="font-size: 11px; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;" locale="pt" widgetVar="myschedule">
+
+                            <p:ajax event="dateSelect" listener="#{mbCalendario.onDateSelect}" update=":frm_adiciona_calendario:pg_eventDetails" oncomplete="PF('eventDialog').show()" />
+                            <p:ajax event="eventSelect" listener="#{mbCalendario.onEventSelect}" update=":frm_adiciona_calendario:pg_eventDetails" oncomplete="PF('eventDialog').show()" />
+
+
+                        </p:schedule>
+                    </h:panelGrid>
+                </h:form>
+                <h:form id="frm_adiciona_calendario">
+
+                    <p:growl id="growl_inclui_calendario" life="2000" showDetail="true" />
+
+                    <p:dialog id="dlg_eventDialog" styleClass="font_padrao" resizable="false" draggable="false" modal="true" focus="nome" widgetVar="eventDialog" header="Adicionar versão no calendário" showEffect="clip" hideEffect="clip">
+                        <h:panelGrid id="pg_eventDetails" style="font-size: 11px" columns="2">
+                            <h:outputLabel for="nome" value="Nome:" />
+                            <p:inputText id="nome" label="nome" value="#{mbCalendario.trEvent.title}" size="50" maxlength="100" required="true" requiredMessage="Nome da versão é obrigatório."/>  
+
+                            <h:outputLabel for="observacao" value="Observação:" />  
+                            <p:inputTextarea id="observacao" maxlength="200" value="#{mbCalendario.trEvent.description}" label="observacao" rows="8" cols="49" />  
+
+                            <h:outputLabel for="from" value="Dia:" />
+                            <p:inputMask id="from" disabled="true" value="#{mbCalendario.trEvent.startDate}" required="true" requiredMessage="Data é obrigatório." mask="99/99/9999">
+                                <f:convertDateTime locale="pt" timeZone="America/Sao_Paulo" pattern="dd/MM/yyyy" />
+                            </p:inputMask>
+
+                            <p:commandButton id="cb_adicionar" process="@form" icon="ui-icon-check"  update="growl_inclui_calendario pg_eventDetails :frm_calendario:schedule" value="Salvar" actionListener="#{mbCalendario.addEvent(actionEvent)}"/>
+
+                            <p:commandButton id="cb_delete" process="@this" icon="ui-icon-trash" update="growl_inclui_calendario pg_eventDetails :frm_calendario:schedule" value="Deletar" actionListener="#{mbCalendario.deleteEvent()}"/>
+
+                        </h:panelGrid>
+                    </p:dialog>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

@@ -1,0 +1,92 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body>
+        <ui:composition template="trPrincipal.xhtml">
+            <ui:define name="centro">
+                <h:form id="form_dlg_classif">
+
+                    <p:growl id="growl_nova_classif" life="2000" showDetail="true">
+                        <p:effect type="pulsate" event="load" delay="2000" />  
+                    </p:growl>  
+
+                    <p:fieldset legend="Cadastrar nova classificação de arquivo" style="font-size: 12px; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;">
+                        <h:panelGrid>
+                            <p:commandButton id="cb_incluir_classif" styleClass="font_padrao" value="Incluir Classificação" style="font-size: 11px; margin-bottom: 7px; font-weight: bold" 
+                                             onclick="PF('dlg').show();" type="button" icon="ui-icon-plus"/>
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <p:dialog id="dlg_incluir_classif" header="Classificação" widgetVar="dlg" closable="false" focus="nome" modal="true" resizable="false" draggable="false" style="font-size: 12px;">  
+
+                        <h:panelGrid id="pg_incluir_classif" columns="2" cellpadding="5">  
+
+                            <h:outputLabel for="nome" value="Classificação: " />  
+                            <p:inputText id="nome" label="nome" value="#{mbClassif.novaClassif.descricao}" size="50" maxlength="100" required="true" requiredMessage="Nome da classificação é obrigatório."/>  
+
+                            <p:commandButton id="cb_incluir" update=":form_dlg_classif:growl_nova_classif pg_incluir_classif :frm_dt_classif:dt_classif" process="@form" value="Incluir" icon="ui-icon-check"
+                                             actionListener="#{mbClassif.incluiClassif}"  style="font-size: 12px;"  />  
+
+                            <p:commandButton id="cb_cancelar" value="Cancelar" style="font-size: 12px;"
+                                             icon="ui-icon-cancel">
+                                <p:ajax update="dlg_incluir_classif" resetValues="true" />  
+                            </p:commandButton>
+
+                        </h:panelGrid>  
+
+                    </p:dialog>
+                </h:form>
+                <h:form id="frm_dt_classif">
+                    <h:panelGrid id="pg_dt_altera_classif" style="width: 100%;">
+                        <p:dataTable var="classif" id="dt_classif" style="table-layout: fixed; font-size: 12px; margin-top: 10px; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;" 
+                                     paginator="true" rows="12" value="#{mbClassif.trClassif}" 
+                                     emptyMessage="Nenhuma classificação cadastrada!!!" 
+                                     filteredValue="#{mbClassif.filtroClassif}"
+                                     selectionMode="single"
+                                     rowKey="#{classif.idClassificacao}">
+
+                            <p:column headerText="Id Classificação" rendered="false">  
+                                <h:outputText value="#{classif.idClassificacao}" />
+                            </p:column>  
+
+                            <p:column headerText="Classificação" width="80%" filterMatchMode="contains" filterBy="descricao">  
+                                <h:outputText style=" font-size: 13px; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;" value="#{classif.descricao}" />
+                            </p:column>  
+
+                            <p:column style="width:3%; text-align: center">
+                                <p:commandButton id="btn_edit" update=":frm_dlg_altera_classif:pg_altera_classif" oncomplete="PF('dlg_alt').show()" icon="ui-icon-search" title="Visualizar">  
+                                    <f:setPropertyActionListener value="#{classif}" target="#{mbClassif.selectedClassif}" />  
+                                </p:commandButton>  
+                            </p:column>
+
+                            <p:column style="width:3%; text-align: center">
+                                <p:commandButton id="btn_delete" update=":frm_dlg_altera_classif:growl_altera_classif" actionListener="#{mbClassif.deletaClassif(classif)}" icon="ui-icon-trash" title="Deletar"/>
+                            </p:column>
+                        </p:dataTable>
+                    </h:panelGrid>
+                </h:form>
+                <h:form id="frm_dlg_altera_classif">
+
+                    <p:growl id="growl_altera_classif" life="2000" showDetail="true">
+                        <p:effect type="pulsate" event="load" delay="2000" />
+                    </p:growl>
+
+                    <p:dialog id="dlg_alterar_classif" header="Classificação" widgetVar="dlg_alt" closable="false" focus="nome_alterar" modal="true" resizable="false" style="font-size: 12px;">  
+                        <h:panelGrid id="pg_altera_classif" columns="2" cellpadding="5">  
+
+                            <h:outputLabel for="nome_alterar" value="Classificação: " />  
+                            <p:inputText id="nome_alterar" label="nome" value="#{mbClassif.selectedClassif.descricao}" size="50" maxlength="100" required="true" requiredMessage="Nome da seção é obrigatório."/>  
+
+                            <p:commandButton id="cb_incluir_alterar" update=":frm_dt_classif:pg_dt_altera_classif :frm_dlg_altera_classif:growl_altera_classif" actionListener="#{mbClassif.alteraClassif()}" process="@form" value="Alterar" icon="ui-icon-check"
+                                             style="font-size: 12px;"  />  
+
+                            <p:commandButton id="cb_cancelar_alterar" value="Cancelar" style="font-size: 12px;" onclick="PF('dlg_alt').hide()"
+                                             icon="ui-icon-cancel"/>
+
+                        </h:panelGrid>  
+                    </p:dialog>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

@@ -1,0 +1,45 @@
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body >
+        <ui:composition template="trPrincipal.xhtml">
+            <ui:define name="centro">
+                <h:form id="frm_suporte">
+                    <p:panel styleClass="preformatted font_padrao" style="font-size: 12px; margin-top: 50px; background: none !important">
+                        <p:outputPanel layout="block" style="margin-left: 40%">
+                            <p:graphicImage style="margin-bottom: -15px; margin-right: 10px;" url="#{resource['images/support.png']}" />
+                            <p:outputLabel  styleClass="sub_titulo" value="WebCall Center" />
+                        </p:outputPanel>
+                        Acessando o Web Call Center Softway é possível abrir incidentes de dúvida, problema, consultoria on-line, ordem de serviço e sugestão de melhorias relacionadas aos sistemas Softway.
+                        O objetivo da área de Suporte a clientes é manter o cliente em operação, atendendo os incidentes referentes dúvidas ou problemas, bem como consultorias on line, relacionados aos produtos Softway.
+
+                        <b><u>Para maiores esclarecimentos, consulte o Guia do usuário!</u></b>
+
+                        <b><u>Consultoria On-line</u></b> é uma solicitação de consultoria remota, com consumo de poucas horas, que podem ser abatidas do contrato de horas de suporte do cliente.
+
+                        <b><u>Ordem de Serviço:</u></b>
+                        Consultoria: é uma Ordem de Serviço através da qual se solicita auxílio em casos de:
+
+                        <b><u>1.</u></b> Apoio conceitual sobre o sistema e/ou legislação.
+
+                        <b><u>2.</u></b> Treinamento.
+
+                        <b><u>3.</u></b> Acompanhamentos on-site.
+
+                        <b><u>4.</u></b> Ajustes de parametrizações no sistema.
+
+                        <b><u>5.</u></b> Apoio em testes de novos cenários.
+
+                        <b><u>6.</u></b> Apoio em migração de versão.
+
+                        <b><u>7.</u></b> Requisição para testes dos sistemas devido a mudanças da infraestrutura do cliente.
+
+                        <b><u>8.</u></b> Outras solicitações que não se encaixam como uma dúvida pontual sobre o sistema ou Consultoria On-line." 
+                    </p:panel>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

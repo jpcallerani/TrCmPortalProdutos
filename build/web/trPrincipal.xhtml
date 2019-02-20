@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head>
+        <h:outputStylesheet library="css" name="index.css"  />
+        <h:outputScript library="js" name="locale.js" />
+        <link rel="shortcut icon" href="#{resource['images/favicon.ico']}"/>
+        <title>Portal de Produtos Thomson Reuters</title>
+    </h:head>
+    <h:body>
+        <div id="wrap">
+            <div id="header">
+                <h:form>
+                    <p:commandLink action="trPrincipal.xhtml?faces-redirect=true">
+                        <div id="tr_logo"/>
+                    </p:commandLink>
+                </h:form>
+            </div>
+            <p:ajaxStatus>
+                <f:facet name="start">  
+                    <div id="spinner" style="display: block" />
+                    <div class="loading-indicator" style="display: block" />
+                </f:facet>  
+
+                <f:facet name="complete">  
+                    <div id="spinner" style="display: none" />
+                    <div class="loading-indicator" style="display: none" />
+                </f:facet>  
+            </p:ajaxStatus>
+            <h:form>
+                <p:growl id="messages"/>  
+                <p:menubar>
+                    <p:menuitem value="Downloads" ajax="false"  action="trDownload.xhtml?faces-redirect=true" />
+                    <p:menuitem value="Suporte" action="trSuporte.xhtml?faces-redirect=true" />
+                    <p:submenu label="Administração" rendered="#{mbPrincipal.trUsuario.nivel_acesso == 'AD'}">  
+                        <p:menuitem value="Seção"                 ajax="false"  action="trCadSessao.xhtml?faces-redirect=true" />  
+                        <p:menuitem value="Classificação Arquivos" ajax="false"  action="trCadClassificacao.xhtml?faces-redirect=true"/>  
+                        <p:menuitem value="Upload"                 ajax="false"  action="trCadUpload.xhtml?faces-redirect=true"/>  
+                        <p:menuitem value="Consultar Upload"       ajax="false"  action="trConsultaUpload.xhtml?faces-redirect=true"/>  
+                        <p:menuitem value="Calendário de Versão"   ajax="false"  action="trCadCalendarioVersao.xhtml?faces-redirect=true"/>  
+                        <p:menuitem value="Funcionarios"           ajax="false"  action="trUsuarioAdm.xhtml?faces-redirect=true"/>  
+                        <p:menuitem value="Cadastro de Notícias"   ajax="false"  action="trCadNoticia.xhtml?faces-redirect=true"/>  
+                    </p:submenu>
+                    <f:facet name="options">  
+                        <pe:tooltip for="cl_home" myPosition="left, top" value="Home" showEffect="slideToggle" hideEffect="slideToggle"/>
+                        <h:commandLink  action="trPrincipal.xhtml?faces-redirect=true">
+                            <p:graphicImage id="cl_home" url="#{resource['images/home2.png']}" style="margin-right: 30px; margin-bottom: -7px;"/>        
+                        </h:commandLink>
+                        <pe:tooltip for="cl_usuario" value="Sair do sistema" myPosition="left, top" showEffect="slideToggle" hideEffect="slideToggle"/>
+                        <p:commandButton style="font-size: 11px; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;" id="cl_usuario" actionListener="#{mbPrincipal.logoff()}" value="#{mbPrincipal.trUsuario.nome_func}" image="ui-icon-logoff"/> 
+                    </f:facet> 
+                </p:menubar>  
+            </h:form>
+            <div id="content">
+                <ui:insert name="centro">
+                    <p:outputLabel style="width: 79%; display: block; float: left; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif; font-size: 11px;">
+                        <br></br>
+                        <h:outputText class="titulo" style="margin-left: 7px !important;" value="Softway Suite v12" />
+                        <br></br><br></br>
+                        <p:separator/>
+                        <br></br>
+                        <p:dataScroller value="#{mbPrincipal.noticia}" var="noticia" chunkSize="2" mode="inline" scrollHeight="500">
+                            <h:panelGrid columns="2" style="width:100%;">
+                                <p:outputPanel>
+                                    <h:panelGrid columns="2" style="width: 80%" cellpadding="5">
+                                        <p:graphicImage url="#{resource['images/news.png']}" style="margin-top: 7px; margin-right: 5px;"/> 
+                                        <h:outputText value="#{noticia.titulo}" styleClass="sub_titulo" style="font-weight: bold;"/>
+
+                                        <h:outputText value=" " />
+                                        <h:outputText value="#{noticia.mensagem}" styleClass="preformatted" style="font-weight: bold"/>
+                                    </h:panelGrid>
+                                </p:outputPanel>
+                            </h:panelGrid>
+                        </p:dataScroller>
+                    </p:outputLabel>                            
+                    <p:outputLabel style="width: 20%; height: 350px; display: block; float: right; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif; font-size: 11px;">
+                        <br></br>
+                        <h:outputText class="titulo" value="Calendário de Versão"/>
+                        <br></br><br></br>
+                        <p:separator  style="width: 99%"/>
+                        <br></br>
+                        <c:forEach var="calendarios" items="#{mbPrincipal.trHashCalendario}">
+                            <p:graphicImage style="margin-bottom: -4px; margin-right: 5px;" url="#{resource['images/calendar.png']}"/>  
+                            <p:outputLabel value="#{mbPrincipal.formataData(calendarios.key)}" style="font-weight: bold; "/><br></br>
+                            <c:set var="calendario" value="#{calendarios.value}"/>
+                            <c:forEach var="backupCalendar" items="#{calendario}">
+                                <p:graphicImage style="margin-bottom: -4px;" url="#{resource['images/arrow.png']}"/>  
+                                <p:outputLabel style="font-family: Lucida Grande,Lucida Sans,Arial,sans-serif; margin-bottom: 5px;" value="  #{backupCalendar.nome}" /><br></br>
+                            </c:forEach>
+                            <br></br>
+                            <p:separator  style="width: 99%; margin-bottom: 6px; "/>
+                        </c:forEach>
+                    </p:outputLabel>    
+                    <p:outputLabel style="width: 20%; height: 200px; display: block; float: right; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif; font-size: 11px;">
+                        <br></br>
+                        <h:outputText class="titulo" value="Universidade Corporativa"/>
+                        <br></br><br></br>
+                        <p:separator  style="width: 99%"/><br></br>
+                        <p:graphicImage url="#{resource['images/book.png']}" style="margin-right: 10px" />
+                        <p:outputLabel styleClass="font_padrao" style="text-align: center; font-size: 12px;" value="A Softway oferece através da sua universidade Corporativa treinamentos on-line sobre a Softway Suite"/>
+                        <h:form>
+                            <a href="http://www.softcomex.com.br/treinamento" target="_blank"><br></br>
+                                Clique aqui e conheça.
+                            </a><br></br>
+                        </h:form>
+                        <br></br>
+                    </p:outputLabel>   
+                </ui:insert>
+            </div>
+        </div>
+    </h:body>
+</html>

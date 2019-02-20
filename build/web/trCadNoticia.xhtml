@@ -1,0 +1,98 @@
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body >
+        <ui:composition template="trPrincipal.xhtml">
+            <ui:define name="centro">
+                <h:form id="form_dlg_noticia">
+
+                    <p:growl id="growl_incluir_noticia" life="2000" showDetail="true"/>  
+
+                    <p:fieldset legend="Cadastrar nova seção" style="font-size: 12px;font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;">  
+                        <h:panelGrid>
+                            <p:commandButton id="cb_incluir_noticia" styleClass="font_padrao" value="Incluir Notícias" style="font-size: 11px; margin-bottom: 7px;" onclick="PF('dlg').show();" type="button"   
+                                             icon="ui-icon-plus"/>
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <p:dialog id="dlg_incluir_noticia" header="Notícias" widgetVar="dlg" closable="false" focus="titulo" modal="true" resizable="false" draggable="false" style="font-size: 12px;">  
+
+                        <h:panelGrid id="pg_incluir_noticia" columns="2" cellpadding="5" style="font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;">
+
+                            <h:outputLabel for="titulo" value="Titulo: " />
+                            <p:inputText id="titulo" label="titulo" value="#{mbNoticia.novaNoticia.titulo}" size="70" maxlength="100" required="true" requiredMessage="Titulo é obrigatório."/>  
+
+                            <h:outputLabel for="mensagem" value="Mensagem:" />
+                            <p:inputTextarea id="mensagem" maxlength="2000" value="#{mbNoticia.novaNoticia.mensagem}" label="mensagem" rows="12" cols="69" required="true" requiredMessage="mensagem é obrigatório."/>  
+
+                            <p:commandButton id="cb_incluir" update="growl_incluir_noticia pg_incluir_noticia :frm_dt_noticia:pg_dt_altera_noticia" value="Incluir" icon="ui-icon-check"
+                                             actionListener="#{mbNoticia.incluiNoticia()}" style="font-size: 11px;"  />
+
+                            <p:commandButton id="cb_cancelar" value="Cancelar" style="font-size: 11px;" 
+                                             icon="ui-icon-cancel">
+                                <p:ajax update="dlg_incluir_noticia" resetValues="true" />
+                            </p:commandButton>
+
+                        </h:panelGrid>  
+
+                    </p:dialog>  
+                </h:form>
+                <h:form id="frm_dt_noticia">
+                    <h:panelGrid id="pg_dt_altera_noticia" style="width: 100%;">
+                        <p:dataTable var="noticia" id="dt_noticia" style="table-layout: fixed; font-size: 12px; margin-top: 10px; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;" paginator="true" 
+                                     rows="10" value="#{mbNoticia.noticia}" emptyMessage="Nenhuma notícia cadastrada!!!" filteredValue="#{mbNoticia.filtroNoticia}"
+                                     selectionMode="single"
+                                     rowKey="#{noticia.idNoticia}">
+
+                            <p:column headerText="Id Noticia" rendered="false">  
+                                <h:outputText value="#{noticia.idNoticia}" />
+                            </p:column>  
+
+                            <p:column headerText="Titulo" width="30%" filterMatchMode="contains" filterBy="titulo">  
+                                <h:outputText value="#{noticia.titulo}" />
+                            </p:column>  
+
+                            <p:column headerText="Mensagem" width="70%">  
+                                <h:outputText value="#{noticia.mensagem}" />
+                            </p:column> 
+
+                            <p:column style="width:4%; font-size: 11px" >
+                                <p:commandButton id="btn_edit" update=":frm_dlg_altera_noticia:pg_altera_noticia" oncomplete="PF('dlg_alt').show()" icon="ui-icon-search" title="Visualizar">  
+                                    <f:setPropertyActionListener value="#{noticia}" target="#{mbNoticia.selectedNoticia}" />  
+                                </p:commandButton>  
+                            </p:column>
+
+                            <p:column style="width:4%">
+                                <p:commandButton style="font-size: 11px" id="btn_delete" update=":frm_dlg_altera_noticia:growl_altera_noticia :frm_dt_noticia:pg_dt_altera_noticia" actionListener="#{mbNoticia.deletaNoticia(noticia)}" icon="ui-icon-trash" title="Deletar"/>
+                            </p:column>
+                        </p:dataTable>  
+                    </h:panelGrid>
+                </h:form>
+                <h:form id="frm_dlg_altera_noticia">
+
+                    <p:growl id="growl_altera_noticia" life="2000" showDetail="true"/>  
+
+                    <p:dialog id="dlg_alterar_noticia" header="Notícia" widgetVar="dlg_alt" closable="false" focus="titulo_alterar" modal="true" resizable="false" style="font-size: 11px;">  
+                        <h:panelGrid id="pg_altera_noticia" columns="2" cellpadding="5">  
+
+                            <h:outputLabel for="titulo_alterar" value="Titulo: " />
+                            <p:inputText id="titulo_alterar" label="titulo" value="#{mbNoticia.selectedNoticia.titulo}" size="70" maxlength="100" required="true" requiredMessage="Titulo é obrigatório."/>  
+
+                            <h:outputLabel for="mensagem_alterar" value="Mensagem:" />
+                            <p:inputTextarea id="mensagem_alterar" maxlength="2000" value="#{mbNoticia.selectedNoticia.mensagem}" label="mensagem" rows="30" cols="69" required="true" requiredMessage="mensagem é obrigatório." /> 
+
+                            <p:commandButton id="cb_incluir_alterar" update=":frm_dt_noticia:pg_dt_altera_noticia growl_altera_noticia" actionListener="#{mbNoticia.alteraSecao()}" process="@form" value="Alterar" icon="ui-icon-check"
+                                             style="font-size: 12px;"  />  
+
+                            <p:commandButton id="cb_cancelar_alterar" value="Cancelar" style="font-size: 12px;" onclick="PF('dlg_alt').hide()"
+                                             icon="ui-icon-cancel"/>
+
+                        </h:panelGrid>  
+                    </p:dialog>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

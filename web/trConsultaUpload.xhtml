@@ -1,0 +1,74 @@
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body>
+        <ui:composition template="trPrincipal.xhtml">
+            <ui:define name="centro">
+                <h:form id="frm_consulta_upload">
+                    <p:fieldset legend="Consultar Upload" style="font-size: 12px; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;">  
+                        <h:panelGrid id="pg_consulta_upload"> 
+                            <p:selectOneMenu  value="#{mbUpload.trListaArquivo.idSessao}" required="true" requiredMessage="Campos obrigatórios!" 
+                                              styleClass="selectOneMenu font_padrao" converter="secaoConverter" panelStyle="width:150px"
+                                              effect="fold" effectSpeed="200" style="width:160px; font-family: Lucida Sans,Arial,sans-serif; font-size: 13px;"  filter="true" filterMatchMode="contains">
+                                <f:selectItem itemLabel="Selecione" itemValue="" />
+                                <f:selectItems value="#{mbUpload.trSecoes}" var="secao" itemLabel="#{secao.nomeSessao}"  itemValue="#{secao}"/>
+                                <p:ajax  listener="#{mbUpload.eventSecao()}" update=":frm_tb_upload:dt_lista_arquivo" />
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                    </p:fieldset>
+                </h:form>
+                <h:form id="frm_tb_upload">
+                    <p:growl id="growl_upload" showDetail="true" escape="false"/>
+
+                    <h:panelGrid id="pg_dt_altera_upload" style="width: 100%; font-size: 11px;">
+                        <p:dataTable id="dt_lista_arquivo" var="arquivo" emptyMessage="Nenhum arquivo encontrado." style="font-size: 12px;" value="#{mbUpload.trListaArquivos}">
+
+                            <p:column headerText="Id" rendered="false">
+                                <p:outputLabel styleClass="font_padrao" value="#{arquivo.nomeArquivo}" style="width: 15%; font-size: 11px;"/>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <p:outputLabel styleClass="font_padrao" value="Nome do arquivo" style="width: 15%;font-size: 11px;"/>
+                                </f:facet>
+                                <p:inputText styleClass="font_padrao" value="#{arquivo.nomeArquivo}" style="width: 400px;font-size: 11px;" required="true"/>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <p:outputLabel styleClass="font_padrao" value="Classificação" style="width: 35%; font-size: 11px;"/>
+                                </f:facet>
+                                <p:selectOneMenu styleClass="font_padrao" value="#{arquivo.idClassificacao}" required="true" requiredMessage="Campos obrigatórios!" converter="classifConverter" panelStyle="width:150px"
+                                                 effect="fade" style="width:160px;font-size: 11px;"  filter="true" filterMatchMode="contains">
+                                    <f:selectItem itemLabel="Selecione"  itemValue=""/>
+                                    <f:selectItems value="#{mbUpload.trClassifs}" var="classif" itemLabel="#{classif.descricao}" itemValue="#{classif}"/>
+                                </p:selectOneMenu>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <p:outputLabel styleClass="font_padrao" value="Seção" style="width: 35%;font-size: 11px;"/>
+                                </f:facet>
+                                <p:selectOneMenu value="#{arquivo.idSessao}" required="true" requiredMessage="Campos obrigatórios!" styleClass="selectOneMenu" converter="secaoConverter" panelStyle="width:150px"
+                                                 effect="fade" style="width:160px;font-size: 11px;"  filter="true" filterMatchMode="contains">
+                                    <f:selectItem itemLabel="Selecione"  itemValue="" />
+                                    <f:selectItems value="#{mbUpload.trSecoes}" var="secao" itemLabel="#{secao.nomeSessao}" itemValue="#{secao}"/>
+                                </p:selectOneMenu>
+                            </p:column>   
+
+                            <p:column style="width:4%">
+                                <p:commandButton styleClass="font_padrao" style="font-size: 11px;" id="btn_edit" update=":frm_tb_upload:growl_upload" actionListener="#{mbUpload.alteraArquivo(arquivo)}" icon="ui-icon-disk" title="Salvar"/>
+                            </p:column>
+
+                            <p:column style="width:4%">
+                                <p:commandButton styleClass="font_padrao" style="font-size: 11px;" id="btn_delete" update=":frm_tb_upload:growl_upload :frm_tb_upload:dt_lista_arquivo" actionListener="#{mbUpload.deletaArquivo(arquivo)}" icon="ui-icon-trash" title="Deletar"/>
+                            </p:column>
+                        </p:dataTable>
+                    </h:panelGrid>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

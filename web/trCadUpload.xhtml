@@ -1,0 +1,71 @@
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body>
+        <ui:composition template="trPrincipal.xhtml">
+            <ui:define name="centro">
+
+                <h:form id="frm_update_upload">
+
+                    <p:remoteCommand name="updateCommand" update=":frm_cadUpload :frm_lista_arquivos:dt_arquivos" />
+
+                    <p:growl id="growl_upload" life="2000" showDetail="true" />
+
+                </h:form>
+
+                <h:form enctype="multipart/form-data" id="frm_cadUpload">
+                    <p:fileUpload id="fu_arquivo" styleClass="font_padrao" style="font-size: 12px; font-family: Lucida Sans,Arial,sans-serif;" 
+                                  fileUploadListener="#{mbUpload.insereArquivos}"
+                                  dragDropSupport="true" 
+                                  label="Escolher Arquivo"
+                                  uploadLabel="Carregar"
+                                  auto="true"
+                                  fileLimit="2"
+                                  sizeLimit="10000000000"
+                                  fileLimitMessage="Número máximo de 2 arquivos por vez."
+                                  update=":frm_update_upload:growl_upload :frm_update_upload:growl_upload"
+                                  oncomplete="updateCommand()"/>
+                </h:form>
+                <p:resizable for="frm_cadUpload" />
+                <h:form id="frm_lista_arquivos">
+                    <p:dataTable id="dt_arquivos" emptyMessage="Nenhum arquivo adicionado." value="#{mbUpload.trArquivos}" styleClass="font_padrao" style="font-size: 13px; font-family: Lucida Sans,Arial,sans-serif;" var="arq">
+                        <p:column>
+                            <f:facet name="header">
+                                <p:outputLabel styleClass="font_padrao" value="Nome do arquivo *" style="width: 15%; font-size: 12px;"/>
+                            </f:facet>
+                            <p:inputText  styleClass="font_padrao" value="#{arq.idArquivo.nomeArquivo}" style="width: 400px; font-size: 12px;" required="true"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <p:outputLabel styleClass="font_padrao" value="Classificação *" style="width: 35%; font-size: 12px;"/>
+                            </f:facet>
+                            <p:selectOneMenu styleClass="font_padrao" value="#{arq.idArquivo.idClassificacao}" required="true" requiredMessage="Campos obrigatórios!" converter="classifConverter" panelStyle="width:150px"
+                                             style="width:160px; font-size: 11px;"  filter="true" filterMatchMode="contains">
+                                <f:selectItem itemLabel="Selecione"  itemValue=""/>
+                                <f:selectItems value="#{mbUpload.trClassifs}" var="classif" itemLabel="#{classif.descricao}" itemValue="#{classif}"/>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <p:outputLabel styleClass="font_padrao" value="Seção *" style="width: 35%; font-size: 12px;"/>
+                            </f:facet>
+                            <p:selectOneMenu value="#{arq.idArquivo.idSessao}" required="true" requiredMessage="Campos obrigatórios!" styleClass="selectOneMenu font_padrao" converter="secaoConverter" panelStyle="width:150px"
+                                             style="width:160px; font-size: 11px;"  filter="true" filterMatchMode="contains">
+                                <f:selectItem itemLabel="Selecione"  itemValue="" />
+                                <f:selectItems value="#{mbUpload.trSecoes}" var="secao" itemLabel="#{secao.nomeSessao}" itemValue="#{secao}"/>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column style="width:4%">
+                            <p:commandButton id="btn_delete" style="font-size: 12px;" styleClass="font_padrao" process="@this" update="dt_arquivos" icon="ui-icon-trash" title="Deletar" actionListener="#{mbUpload.deletaArquivo(arq)}"/>
+                        </p:column>
+                        <f:facet name="footer">
+                            <p:commandButton style="font-size: 11px;" styleClass="font_padrao" update=":frm_update_upload:growl_upload :frm_lista_arquivos" value="Atualizar arquivos" actionListener="#{mbUpload.atualizaArquivo}" />
+                        </f:facet>
+                    </p:dataTable>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

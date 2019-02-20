@@ -1,0 +1,42 @@
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body >
+        <ui:composition template="trPrincipal.xhtml">
+            <ui:define name="centro">
+                <h:form id="frm_controla_usuario">
+                    <h:panelGrid id="pg_dt_controla_usuario" style="width: 100%;">
+                        <p:dataTable var="usuario" id="dt_controla_usuario" style="table-layout: fixed; font-size: 12px; margin-top: 10px; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;" 
+                                     paginator="true" rows="15" value="#{mbUsuarioAdm.trUsuarios}"
+                                     filteredValue="#{mbUsuarioAdm.filtroUsuario}"
+                                     selectionMode="single"
+                                     rowKey="#{usuario.cod_func}">
+                            
+                            <p:column headerText="Id usuario" rendered="false">  
+                                <h:outputText value="#{usuario.login_func}" />
+                            </p:column>  
+
+                            <p:column headerText="Nome" width="60%" filterMatchMode="contains" filterBy="nome_func">  
+                                <h:outputText style="font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;" value="#{usuario.nome_func}" />
+                            </p:column>  
+
+                            <p:column headerText="Login" width="10%">  
+                                <h:outputText value="#{usuario.login_func}" />
+                            </p:column> 
+
+                            <p:column headerText="Email" width="30%">  
+                                <h:outputText value="#{usuario.email}" />
+                            </p:column> 
+
+                            <p:column style="width:4%; text-align: center; font-weight: bold; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;" headerText="ADM?">  
+                                <p:selectBooleanCheckbox value="#{usuario.adm}" />
+                            </p:column> 
+                        </p:dataTable>  
+                    </h:panelGrid>
+                </h:form>
+            </ui:define>
+        </ui:composition>            
+    </h:body>
+</html>

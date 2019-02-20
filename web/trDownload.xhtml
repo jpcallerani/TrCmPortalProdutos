@@ -1,0 +1,52 @@
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body >
+        <ui:composition template="trPrincipal.xhtml">
+            <ui:define name="centro">
+                <h:form id="frm_download">
+                    <p:growl id="growl_download" life="2000" showDetail="true"/>
+                    <ui:repeat var="secao" value="#{mbDownload.trSessao}">
+                        <ui:repeat var="classif" value="#{mbDownload.trHashSessao.get(secao)}">
+                            <p:dataTable var="arquivo" value="#{classif.asMap().entrySet().toArray()}" style="font-size: 12px; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;">
+                                <p:column style="width:16px">
+                                    <p:rowToggler />
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="#{secao.nomeSessao}" styleClass="sub_titulo" style="margin-left: 5px;"/>
+                                    </f:facet>
+                                    <p:outputLabel styleClass="font_padrao" value=" #{arquivo.key}" style="font-size: 12px; font-weight: bold;"/><br></br>
+                                </p:column>
+                                <p:rowExpansion >
+                                    <ui:repeat var="arquivo2" value="#{arquivo.value}">
+                                        <p:outputPanel style="margin-top: 5px; margin-bottom: 5px; margin-left: 30px;">
+                                            <p:commandLink actionListener="#{mbDownload.Download(arquivo2)}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" update=":frm_download:growl_download">
+                                                <p:graphicImage title="download" style="margin-bottom: -4px; margin-right: 5px; border: none !important" url="#{resource['images/down.png']}"/>  
+                                                <p:fileDownload value="#{mbDownload.trDownload}" />
+                                            </p:commandLink>
+                                            <p:outputLabel styleClass="font_padrao" value=" #{arquivo2.nomeArquivo} " style="font-size: 11px;"/>
+                                            <p:outputLabel styleClass="font_padrao" value="-" style="font-size: 11px;"/>
+                                            <p:outputLabel styleClass="font_padrao" value=" #{mbDownload.formataData(arquivo2.data)} " style="font-size: 11px; "/><br></br>
+                                        </p:outputPanel>
+                                    </ui:repeat>
+                                </p:rowExpansion>
+                            </p:dataTable>
+                        </ui:repeat>
+                    </ui:repeat>  
+                    <script type="text/javascript">
+                        function start() {
+                            $(".loading-indicator").css("display", "block");
+                        }
+
+                        function stop() {
+                            $(".loading-indicator").css("display", "none");
+                        }
+                    </script>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

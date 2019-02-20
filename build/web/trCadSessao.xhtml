@@ -1,0 +1,106 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body>
+        <ui:composition template="trPrincipal.xhtml">
+            <ui:define name="centro">
+                <h:form id="form_dlg_secao">
+
+                    <p:growl id="growl_incluir_secao" life="2000" showDetail="true"/>  
+                    
+                    <p:fieldset legend="Cadastrar nova seção" style="font-size: 12px; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;">  
+                        <h:panelGrid>
+                            <p:commandButton id="cb_incluir_secao" styleClass="font_padrao" value="Incluir Seção" style="font-size: 11px; margin-bottom: 7px;" onclick="PF('dlg').show();" type="button"   
+                                             icon="ui-icon-plus"/>
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <p:dialog id="dlg_incluir_secao" header="Seção" widgetVar="dlg" closable="false" focus="nome" modal="true" resizable="false" draggable="false" style="font-size: 12px;">  
+                        
+                        <h:panelGrid id="pg_incluir_secao" columns="2" cellpadding="5">
+
+                            <h:outputLabel for="nome" value="Nome Seção: " />
+                            <p:inputText id="nome" label="nome" value="#{mbSessao.novaSessao.nomeSessao}" size="50" maxlength="100" required="true" requiredMessage="Nome da seção é obrigatório."/>  
+
+                            <h:outputLabel for="observacao" value="Observação:" />
+                            <p:inputTextarea id="observacao" maxlength="200" value="#{mbSessao.novaSessao.observacao}" label="observacao" rows="8" cols="49" />  
+
+                            <h:outputLabel for="valido" value="Valido: " />  
+                            <p:selectBooleanCheckbox id="valido" value="#{mbSessao.valido}" />  
+
+                            <p:commandButton id="cb_incluir" update="growl_incluir_secao pg_incluir_secao :frm_dt_secao:pg_dt_altera_secao" value="Incluir" icon="ui-icon-check"
+                                             actionListener="#{mbSessao.incluiSecao}" style="font-size: 12px;"  />
+
+                            <p:commandButton id="cb_cancelar" value="Cancelar" style="font-size: 12px;" 
+                                             icon="ui-icon-cancel">
+                                <p:ajax update="dlg_incluir_secao" resetValues="true" />
+                            </p:commandButton>
+
+                        </h:panelGrid>  
+
+                    </p:dialog>  
+                </h:form>
+                <h:form id="frm_dt_secao">
+                    <h:panelGrid id="pg_dt_altera_secao" style="width: 100%;">
+                        <p:dataTable var="secao" id="dt_secao" style="table-layout: fixed; font-size: 12px; margin-top: 10px; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;" paginator="true" 
+                                     rows="12" value="#{mbSessao.sessao}" emptyMessage="Nenhuma Seção cadastrada!!!" filteredValue="#{mbSessao.filtroSessao}"
+                                     selectionMode="single"
+                                     rowKey="#{secao.idSessao}">
+
+                            <p:column headerText="Id Seção" rendered="false">  
+                                <h:outputText value="#{secao.idSessao}" />
+                            </p:column>  
+
+                            <p:column headerText="Nome da Seção" width="60%" filterMatchMode="contains" filterBy="nomeSessao">  
+                                <h:outputText style=" font-size: 13px; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;" value="#{secao.nomeSessao}" />
+                            </p:column>  
+
+                            <p:column headerText="Observação" width="40%">  
+                                <h:outputText value="#{secao.observacao}" />
+                            </p:column> 
+
+                            <p:column style="width:4%; text-align: center; font-weight: bold; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;" headerText="Valido?">  
+                                <h:outputText value="#{secao.valido}" />
+                            </p:column> 
+
+                            <p:column style="width:4%">
+                                <p:commandButton id="btn_edit" update=":frm_dlg_altera_secao:pg_altera_secao" oncomplete="PF('dlg_alt').show()" icon="ui-icon-search" title="Visualizar">  
+                                    <f:setPropertyActionListener value="#{secao}" target="#{mbSessao.selectedSecao}" />  
+                                </p:commandButton>  
+                            </p:column>
+
+                            <p:column style="width:4%">
+                                <p:commandButton id="btn_delete" update=":frm_dlg_altera_secao:growl_altera_secao" actionListener="#{mbSessao.deletaSecao(secao)}" icon="ui-icon-trash" title="Deletar"/>
+                            </p:column>
+                        </p:dataTable>  
+                    </h:panelGrid>
+                </h:form>
+                <h:form id="frm_dlg_altera_secao">
+
+                    <p:growl id="growl_altera_secao" life="2000" showDetail="true"/>  
+
+                    <p:dialog id="dlg_alterar_secao" header="Seção" widgetVar="dlg_alt" closable="false" focus="nome_alterar" modal="true" resizable="false" style="font-size: 12px;">  
+                        <h:panelGrid id="pg_altera_secao" columns="2" cellpadding="5">  
+
+                            <h:outputLabel for="nome_alterar" value="Nome Seção: " />  
+                            <p:inputText id="nome_alterar" label="nome" value="#{mbSessao.selectedSecao.nomeSessao}" size="50" maxlength="100" required="true" requiredMessage="Nome da seção é obrigatório."/>  
+
+                            <h:outputLabel for="observacao_alterar" value="Observação:" />  
+                            <p:inputTextarea id="observacao_alterar" maxlength="200" value="#{mbSessao.selectedSecao.observacao}" label="observacao" rows="8" cols="49" />  
+
+                            <h:outputLabel for="valido_alterar" value="Valido: " />  
+                            <p:selectBooleanCheckbox id="valido_alterar"  value="#{mbSessao.selectedValido}" />  
+
+                            <p:commandButton id="cb_incluir_alterar" update=":frm_dt_secao:pg_dt_altera_secao growl_altera_secao" actionListener="#{mbSessao.alteraSecao()}" process="@form" value="Alterar" icon="ui-icon-check"
+                                             style="font-size: 12px;"  />  
+
+                            <p:commandButton id="cb_cancelar_alterar" value="Cancelar" style="font-size: 12px;" onclick="PF('dlg_alt').hide()"
+                                             icon="ui-icon-cancel"/>
+
+                        </h:panelGrid>  
+                    </p:dialog>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
